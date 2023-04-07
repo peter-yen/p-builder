@@ -1,21 +1,24 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"os"
-	"text/template"
+	"p-builder/db"
+	"p-builder/global"
+	"p-builder/tmp"
 )
 
 func main() {
 
-	tmp, err := template.New("test").Parse("{{define \"T\"}}Hello, {{.}}!{{end}}")
-	if err != nil {
-		fmt.Print(err)
-		return
+	global.Log = log.New(os.Stdout, "[p-builder] ", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile)
+
+	instance := db.InitDB()
+	defer instance.Close()
+
+	list := db.GetTableList(instance)
+
+	for _, v := range list {
+		tmp.GenerateDB(v)
 	}
 
-	if err = tmp.Execute(os.Stdout, "World"); err != nil {
-		fmt.Print(err)
-		return
-	}
 }
