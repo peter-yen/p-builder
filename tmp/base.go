@@ -8,7 +8,7 @@ import (
 	"text/template"
 )
 
-func GenerateDB(field db.Table) {
+func GenerateDB(field db.Table, folderName string) {
 
 	tmpl, err := template.New(field.Name).Parse(str)
 	if err != nil {
@@ -16,7 +16,7 @@ func GenerateDB(field db.Table) {
 		return
 	}
 
-	file := createFileAndDir("model", field.Name+".go")
+	file := createFileAndDir(folderName, field.Name+".go")
 
 	defer file.Close()
 
