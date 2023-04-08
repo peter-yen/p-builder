@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-func InitDB() (db *sql.DB) {
-	db, err := sql.Open("postgres", "postgresql://peter:123456@localhost:5432/tmpl?sslmode=disable")
+func InitDB(driverName, dir string) (db *sql.DB) {
+	db, err := sql.Open(driverName, dir)
 	if err != nil {
 		global.Log.Println(err)
 		return
