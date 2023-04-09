@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq" // 引入 "pq" 包
-	"p-builder/global"
+	"github.com/peter-yen/p-builder/global"
 	"strings"
 )
 

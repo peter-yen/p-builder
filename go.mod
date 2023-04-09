@@ -1,4 +1,4 @@
-module p-builder
+module github.com/peter-yen/p-builder
 
 go 1.19
 

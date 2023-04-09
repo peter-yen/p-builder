@@ -1,12 +1,12 @@
 package main
 
 import (
+	"github.com/peter-yen/p-builder/db"
+	"github.com/peter-yen/p-builder/flags"
+	"github.com/peter-yen/p-builder/global"
+	"github.com/peter-yen/p-builder/tmp"
 	"log"
 	"os"
-	"p-builder/db"
-	"p-builder/flags"
-	"p-builder/global"
-	"p-builder/tmp"
 )
 
 func main() {
