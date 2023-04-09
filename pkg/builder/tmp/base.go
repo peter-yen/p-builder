@@ -1,8 +1,8 @@
 package tmp
 
 import (
-	"github.com/peter-yen/p-builder/pkg/db"
-	"github.com/peter-yen/p-builder/pkg/global"
+	"github.com/peter-yen/p-builder/pkg/builder/db"
+	"github.com/peter-yen/p-builder/pkg/builder/global"
 	"os"
 	"strings"
 	"text/template"

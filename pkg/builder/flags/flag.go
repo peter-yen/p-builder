@@ -3,7 +3,7 @@ package flags
 import (
 	"flag"
 	"fmt"
-	"github.com/peter-yen/p-builder/pkg/global"
+	"github.com/peter-yen/p-builder/pkg/builder/global"
 )
 
 func ParseFlags() (driver, dir, folderName string) {
