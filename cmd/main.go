@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/peter-yen/p-builder/db"
-	"github.com/peter-yen/p-builder/flags"
-	"github.com/peter-yen/p-builder/global"
-	"github.com/peter-yen/p-builder/tmp"
+	"github.com/peter-yen/p-builder/pkg/db"
+	"github.com/peter-yen/p-builder/pkg/flags"
+	"github.com/peter-yen/p-builder/pkg/global"
+	"github.com/peter-yen/p-builder/pkg/tmp"
 	"log"
 	"os"
 )
