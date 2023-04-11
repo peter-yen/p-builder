@@ -1,7 +1,7 @@
 package db
 
 // 獲取 table 列表
-const getTableList = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
+const postgresTableStmt = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
 
 // 獲取備註
 const getCommentStmt = `

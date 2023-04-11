@@ -41,8 +41,14 @@ func (r *repo) GetTableList() (tables []Table) {
 
 	// TODO: switch driverName ， 先加上 mysql
 
+	switch r.DriverName {
+	case "postgres":
+
+	case "mysql":
+	}
+
 	// 查詢表格列表
-	rows, err := r.DB.Query(getTableList)
+	rows, err := r.DB.Query(postgresTableStmt)
 	if err != nil {
 		global.Log.Println(err)
 		return
