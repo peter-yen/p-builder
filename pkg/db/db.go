@@ -8,7 +8,13 @@ import (
 	"strings"
 )
 
-func InitDB(driverName, dir string) (db *sql.DB) {
+type repo struct {
+	DB         *sql.DB
+	DriverName string
+}
+
+func NewInstance(driverName, dir string) (entity repo) {
+
 	db, err := sql.Open(driverName, dir)
 	if err != nil {
 		global.Log.Println(err)
@@ -22,14 +28,21 @@ func InitDB(driverName, dir string) (db *sql.DB) {
 
 	global.Log.Println("--- Successfully connected to PostgreSQL! ---")
 
-	return db
+	entity = repo{
+		DB:         db,
+		DriverName: driverName,
+	}
+
+	return
 }
 
 // GetTableList 獲取表格列表
-func GetTableList(db *sql.DB) (tables []Table) {
+func (r *repo) GetTableList() (tables []Table) {
+
+	// TODO: switch driverName ， 先加上 mysql
 
 	// 查詢表格列表
-	rows, err := db.Query(getTableList)
+	rows, err := r.DB.Query(getTableList)
 	if err != nil {
 		global.Log.Println(err)
 		return
@@ -47,7 +60,7 @@ func GetTableList(db *sql.DB) (tables []Table) {
 		fmt.Println("Table name:", tableName)
 
 		// MARK: 遍歷表格欄位
-		tables = append(tables, Table{Name: strings.Title(tableName), Columns: iterateColumns(db, tableName)})
+		tables = append(tables, Table{Name: strings.Title(tableName), Columns: r.iterateColumns(tableName)})
 	}
 
 	if err = rows.Err(); err != nil {
@@ -59,8 +72,8 @@ func GetTableList(db *sql.DB) (tables []Table) {
 }
 
 // iterateColumns 遍歷 table 欄位 獲取 reflect type, name, comment
-func iterateColumns(db *sql.DB, table string) (arr []Column) {
-	rows, err := db.Query("SELECT * FROM " + table + " LIMIT 1")
+func (r *repo) iterateColumns(table string) (arr []Column) {
+	rows, err := r.DB.Query("SELECT * FROM " + table + " LIMIT 1")
 	if err != nil {
 		global.Log.Println(err)
 		return
@@ -82,7 +95,7 @@ func iterateColumns(db *sql.DB, table string) (arr []Column) {
 	for i, col := range columns {
 		var comment string
 
-		if err = db.QueryRow(fmt.Sprintf(getCommentStmt, table, col)).
+		if err = r.DB.QueryRow(fmt.Sprintf(getCommentStmt, table, col)).
 			Scan(&comment); err != nil {
 			global.Log.Println(err)
 			return

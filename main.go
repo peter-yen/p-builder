@@ -9,11 +9,11 @@ import (
 	"os"
 )
 
-// 監聽 flags
 // driver: driver name
 // dir: database connection dir
 // folderName: folder name
 func main() {
+	// TODO: 穩定過後 把 Lshortfile 去掉， error 應該 print 出錯誤就好
 	global.Log = log.New(os.Stdout, "[p-builder] ", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile)
 
 	// postgres
@@ -24,11 +24,12 @@ func main() {
 	driver, dir, folderName := flags.ParseFlags()
 
 	// init db
-	instance := db.InitDB(driver, dir)
-	defer instance.Close()
+	instance := db.NewInstance(driver, dir)
+	//instance := db.InitDB(driver, dir)
+	defer instance.DB.Close()
 
 	// get table list & column list
-	list := db.GetTableList(instance)
+	list := instance.GetTableList()
 
 	// generate model
 	for _, v := range list {
