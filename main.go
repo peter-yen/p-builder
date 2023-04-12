@@ -16,7 +16,7 @@ func main() {
 	// TODO: 穩定過後 把 Lshortfile 去掉， error 應該 print 出錯誤就好
 	global.Log = log.New(os.Stdout, "[p-builder] ", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile)
 
-	// postgres
+	// postgres.go
 	// postgresql://peter:123456@localhost:5432/tmpl?sslmode=disable
 	// model
 

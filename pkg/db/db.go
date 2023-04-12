@@ -3,7 +3,8 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/lib/pq" // 引入 "pq" 包
+	_ "github.com/go-sql-driver/mysql" // 引入 MySQL 驅動套件
+	_ "github.com/lib/pq"              // 引入 "pq" 包
 	"github.com/peter-yen/p-builder/pkg/global"
 	"strings"
 )
@@ -39,25 +40,25 @@ func NewInstance(driverName, dir string) (entity repo) {
 // GetTableList 獲取表格列表
 func (r *repo) GetTableList() (tables []Table) {
 
-	// TODO: switch driverName ， 先加上 mysql
-
+	var stmt string
 	switch r.DriverName {
 	case "postgres":
-
+		stmt = postgresTableStmt
 	case "mysql":
+		stmt = mysqlTableStmt
 	}
 
 	// 查詢表格列表
-	rows, err := r.DB.Query(postgresTableStmt)
+	rows, err := r.DB.Query(stmt)
 	if err != nil {
 		global.Log.Println(err)
 		return
 	}
 	defer rows.Close()
 
+	var tableName string
 	// 遍歷結果集，獲取表格名稱
 	for rows.Next() {
-		var tableName string
 		err = rows.Scan(&tableName)
 		if err != nil {
 			global.Log.Println(err)
@@ -98,10 +99,20 @@ func (r *repo) iterateColumns(table string) (arr []Column) {
 		return
 	}
 
+	var stmt string
+
+	// TODO: 重構 , 釐清 和 測試一下 chatGPT 的 語法能不能使用
 	for i, col := range columns {
 		var comment string
 
-		if err = r.DB.QueryRow(fmt.Sprintf(getCommentStmt, table, col)).
+		switch r.DriverName {
+		case "postgres.go":
+			stmt = fmt.Sprintf(postgresCommentStmt, table, col)
+		case "mysql":
+			stmt = fmt.Sprintf(mysqlCommentStmt, table, col)
+		}
+
+		if err = r.DB.QueryRow(stmt).
 			Scan(&comment); err != nil {
 			global.Log.Println(err)
 			return

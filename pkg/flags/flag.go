@@ -8,8 +8,8 @@ import (
 
 func ParseFlags() (driver, dir, folderName string) {
 
-	// default postgres
-	flag.StringVar(&driver, "driver", "postgres", "driver name (default: postgres)")
+	// default postgres.go
+	flag.StringVar(&driver, "driver", "postgres.go", "driver name (default: postgres.go)")
 
 	// required
 	flag.StringVar(&dir, "dir", "", "database connection dir")
@@ -27,7 +27,7 @@ func ParseFlags() (driver, dir, folderName string) {
 	// validate driver name
 
 	if // github.com/lib/pq
-	driver != "postgres" &&
+	driver != "postgres.go" &&
 		// github.com/go-sql-driver/mysql
 		driver != "mysql" &&
 		// github.com/mattn/go-sqlite3
@@ -38,7 +38,7 @@ func ParseFlags() (driver, dir, folderName string) {
 		driver != "oci8" &&
 		// github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/mysql
 		driver != "cloudsqlmysql" &&
-		// github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres
+		// github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres.go
 		driver != "cloudsqlpostgres" {
 		global.Log.Fatalln("error: driver name is invalid!")
 		return
