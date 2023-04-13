@@ -68,10 +68,16 @@ func (r *repo) getPostgresColumns(table string) (arr []Column) {
 			return
 		}
 
-		// TODO: ex:  member_id
-		// TODO: 除了 首字母大寫外 把 橫線 去掉後的 第一個字母也要大寫
+		// 讓 _ 之後的字母大寫
+		names := strings.Split(columnTypes[i].Name(), "_")
+
+		var name string
+		for _, val := range names {
+			name += strings.Title(val)
+		}
+
 		arr = append(arr, Column{
-			Name:     strings.Title(columnTypes[i].Name()),
+			Name:     strings.Title(name),
 			JsonName: columnTypes[i].Name(),
 			DataType: columnTypes[i].DatabaseTypeName(),
 			GoType:   columnTypes[i].ScanType().String(),
