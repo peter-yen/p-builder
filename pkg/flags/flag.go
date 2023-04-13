@@ -8,8 +8,8 @@ import (
 
 func ParseFlags() (driver, dir, folderName string) {
 
-	// default postgres.go
-	flag.StringVar(&driver, "driver", "postgres.go", "driver name (default: postgres.go)")
+	// default postgres
+	flag.StringVar(&driver, "driver", "postgres.go", "driver name (default: postgres)")
 
 	// required
 	flag.StringVar(&dir, "dir", "", "database connection dir")
@@ -27,7 +27,7 @@ func ParseFlags() (driver, dir, folderName string) {
 	// validate driver name
 
 	if // github.com/lib/pq
-	driver != "postgres.go" &&
+	driver != "postgres" &&
 		// github.com/go-sql-driver/mysql
 		driver != "mysql" &&
 		// github.com/mattn/go-sqlite3

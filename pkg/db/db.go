@@ -2,11 +2,9 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 	_ "github.com/go-sql-driver/mysql" // 引入 MySQL 驅動套件
 	_ "github.com/lib/pq"              // 引入 "pq" 包
 	"github.com/peter-yen/p-builder/pkg/global"
-	"strings"
 )
 
 type repo struct {
@@ -23,11 +21,11 @@ func NewInstance(driverName, dir string) (entity repo) {
 	}
 
 	if err = db.Ping(); err != nil {
-		global.Log.Println("Failed to ping PostgreSQL: ", err)
+		global.Log.Println("Failed to ping sql server: ", err)
 		return
 	}
 
-	global.Log.Println("--- Successfully connected to PostgreSQL! ---")
+	global.Log.Println("--- Successfully connected to Server! ---")
 
 	entity = repo{
 		DB:         db,
@@ -38,98 +36,16 @@ func NewInstance(driverName, dir string) (entity repo) {
 }
 
 // GetTableList 獲取表格列表
-func (r *repo) GetTableList() (tables []Table) {
+func (r *repo) GetTableList() []Table {
 
-	var stmt string
 	switch r.DriverName {
 	case "postgres":
-		stmt = postgresTableStmt
+		return r.postgresDiver()
 	case "mysql":
-		stmt = mysqlTableStmt
+		return r.mysqlDiver()
 	}
 
-	// 查詢表格列表
-	rows, err := r.DB.Query(stmt)
-	if err != nil {
-		global.Log.Println(err)
-		return
-	}
-	defer rows.Close()
-
-	var tableName string
-	// 遍歷結果集，獲取表格名稱
-	for rows.Next() {
-		err = rows.Scan(&tableName)
-		if err != nil {
-			global.Log.Println(err)
-			return
-		}
-		fmt.Println("Table name:", tableName)
-
-		// MARK: 遍歷表格欄位
-		tables = append(tables, Table{Name: strings.Title(tableName), Columns: r.iterateColumns(tableName)})
-	}
-
-	if err = rows.Err(); err != nil {
-		global.Log.Println(err)
-		return
-	}
-
-	return
-}
-
-// iterateColumns 遍歷 table 欄位 獲取 reflect type, name, comment
-func (r *repo) iterateColumns(table string) (arr []Column) {
-	rows, err := r.DB.Query("SELECT * FROM " + table + " LIMIT 1")
-	if err != nil {
-		global.Log.Println(err)
-		return
-	}
-	defer rows.Close()
-
-	columnTypes, err := rows.ColumnTypes()
-	if err != nil {
-		global.Log.Println(err)
-		return
-	}
-
-	columns, err := rows.Columns()
-	if err != nil {
-		global.Log.Println(err)
-		return
-	}
-
-	var stmt string
-
-	// TODO: 重構 , 釐清 和 測試一下 chatGPT 的 語法能不能使用
-	for i, col := range columns {
-		var comment string
-
-		switch r.DriverName {
-		case "postgres.go":
-			stmt = fmt.Sprintf(postgresCommentStmt, table, col)
-		case "mysql":
-			stmt = fmt.Sprintf(mysqlCommentStmt, table, col)
-		}
-
-		if err = r.DB.QueryRow(stmt).
-			Scan(&comment); err != nil {
-			global.Log.Println(err)
-			return
-		}
-
-		arr = append(arr, Column{
-			Name:     strings.Title(columnTypes[i].Name()),
-			JsonName: columnTypes[i].Name(),
-			DataType: columnTypes[i].DatabaseTypeName(),
-			GoType:   columnTypes[i].ScanType().String(),
-			Comment:  comment,
-		})
-
-		fmt.Printf("Column: %s, Comment: %s\n", col, comment)
-		fmt.Printf("Column Name: %s, Data Type: %s, Go Type: %v\n", columnTypes[i].Name(), columnTypes[i].DatabaseTypeName(), columnTypes[i].ScanType())
-	}
-	return
+	return nil
 }
 
 type Table struct {
@@ -144,48 +60,3 @@ type Column struct {
 	DataType string // db type
 	Comment  string // 欄位備註
 }
-
-/*
-// iterateColumns 遍歷表格欄位
-func iterateColumns(db *sql.DB, table string) (arr []Column) {
-	// 查詢表格欄位列表
-	rows, err := db.Query("SELECT column_name, column_default, is_nullable, data_type FROM information_schema.columns WHERE table_name = $1", table)
-	if err != nil {
-		global.Log.Println(err)
-		return
-	}
-	defer rows.Close()
-
-	// 遍歷結果集，獲取欄位名稱
-	for rows.Next() {
-		var columnName string
-		var columnDefault sql.NullString
-		var isNullable string
-		var dataType string
-
-		err = rows.Scan(&columnName, &columnDefault, &isNullable, &dataType)
-		if err != nil {
-			global.Log.Println(err)
-			return
-		}
-
-		arr = append(arr, Column{Name: strings.Title(columnName), DataType: dataType})
-
-		fmt.Println("Column name:", columnName)
-		fmt.Println("Column default value:", columnDefault.String)
-		fmt.Println("Is nullable:", isNullable)
-		fmt.Println("Data type:", dataType)
-	}
-
-	if err = rows.Err(); err != nil {
-		global.Log.Println(err)
-		return
-	}
-
-	// 獲取 reflect type
-	getGoTypes(db, table, arr)
-
-	return
-}
-
-*/
