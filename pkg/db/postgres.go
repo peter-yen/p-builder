@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// postgresTableStmt postgres 查詢表格列表
 func (r *repo) postgresDiver() (tables []Table) {
 	// 查詢表格列表
 	rows, err := r.DB.Query(postgresTableStmt)
@@ -37,7 +38,7 @@ func (r *repo) postgresDiver() (tables []Table) {
 	return
 }
 
-// iterateColumns 遍歷 table 欄位 獲取 reflect type, name, comment
+// getPostgresColumns iterate columns 遍歷 table 欄位 獲取 reflect type, name, comment
 func (r *repo) getPostgresColumns(table string) (arr []Column) {
 
 	rows, err := r.DB.Query("SELECT * FROM " + table + " LIMIT 1")

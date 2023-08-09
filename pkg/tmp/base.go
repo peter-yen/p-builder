@@ -8,6 +8,7 @@ import (
 	"text/template"
 )
 
+// GenerateDB 產生 model
 func GenerateDB(field db.Table, folderName string) {
 
 	tmpl, err := template.New(field.Name).Parse(str)
@@ -17,7 +18,6 @@ func GenerateDB(field db.Table, folderName string) {
 	}
 
 	file := createFileAndDir(folderName, field.Name+".go")
-
 	defer file.Close()
 
 	// os.Stdout
@@ -27,6 +27,7 @@ func GenerateDB(field db.Table, folderName string) {
 
 }
 
+// createFileAndDir 建立檔案和資料夾
 func createFileAndDir(dir, fileName string) *os.File {
 	if err := os.MkdirAll(dir, 0777); err != nil {
 		global.Log.Println(err)

@@ -18,15 +18,13 @@ func main() {
 
 	// postgres
 	// MARK: 在終端機使用 dir 要用引號 "" or '' 包起來
-	// postgresql://peter:123456@localhost:5432/tmpl?sslmode=disable
-	// model
+	// ex: postgresql://peter:123456@localhost:5432/tmpl?sslmode=disable
 
 	// parse flags
 	driver, dir, folderName := flags.ParseFlags()
 
 	// init db
 	instance := db.NewInstance(driver, dir)
-	//instance := db.InitDB(driver, dir)
 	defer instance.DB.Close()
 
 	// get table list & column list

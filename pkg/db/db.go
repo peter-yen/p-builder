@@ -7,11 +7,7 @@ import (
 	"github.com/peter-yen/p-builder/pkg/global"
 )
 
-type repo struct {
-	DB         *sql.DB
-	DriverName string
-}
-
+// NewInstance 初始化資料庫連線
 func NewInstance(driverName, dir string) (entity repo) {
 
 	db, err := sql.Open(driverName, dir)
@@ -35,7 +31,7 @@ func NewInstance(driverName, dir string) (entity repo) {
 	return
 }
 
-// GetTableList 獲取表格列表
+// GetTableList 取得資料庫中所有的表格
 func (r *repo) GetTableList() []Table {
 
 	switch r.DriverName {
@@ -46,17 +42,4 @@ func (r *repo) GetTableList() []Table {
 	}
 
 	return nil
-}
-
-type Table struct {
-	Name    string
-	Columns []Column
-}
-
-type Column struct {
-	Name     string // 首字母大寫
-	JsonName string // 小寫
-	GoType   string // go reflect type
-	DataType string // db type
-	Comment  string // 欄位備註
 }
