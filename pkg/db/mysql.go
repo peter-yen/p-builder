@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// mysqlDiver mysql 查詢表格列表
 func (r *repo) mysqlDiver() (tables []Table) {
 	// 查詢表格列表
 	rows, err := r.DB.Query(mysqlTableStmt)
@@ -25,7 +26,7 @@ func (r *repo) mysqlDiver() (tables []Table) {
 		}
 		fmt.Println("Table name:", tableName)
 
-		// MARK: 遍歷表格欄位
+		// 遍歷表格欄位
 		tables = append(tables, Table{Name: strings.Title(tableName), Columns: r.getMysqlColumns(tableName)})
 	}
 
@@ -37,6 +38,7 @@ func (r *repo) mysqlDiver() (tables []Table) {
 	return
 }
 
+// getMysqlColumns iterate columns 遍歷 table 欄位 獲取 reflect type, name, comment
 func (r *repo) getMysqlColumns(tableName string) (arr []Column) {
 
 	rows, err := r.DB.Query(fmt.Sprintf(mysqlCommentStmt, tableName))
@@ -78,6 +80,7 @@ func (r *repo) getMysqlColumns(tableName string) (arr []Column) {
 	return
 }
 
+// reflectMysqlType 獲取 mysql 欄位對應的 golang type
 func reflectMysqlType(dataType string) string {
 	// 統一規格 to lower
 	switch strings.ToLower(dataType) {

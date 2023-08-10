@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// postgresTableStmt postgres 查詢表格列表
+// postgresDiver postgres
 func (r *repo) postgresDiver() (tables []Table) {
 	// 查詢表格列表
 	rows, err := r.DB.Query(postgresTableStmt)
@@ -26,7 +26,7 @@ func (r *repo) postgresDiver() (tables []Table) {
 		}
 		fmt.Println("Table name:", tableName)
 
-		// MARK: 遍歷表格欄位
+		// 遍歷表格欄位
 		tables = append(tables, Table{Name: strings.Title(tableName), Columns: r.getPostgresColumns(tableName)})
 	}
 
