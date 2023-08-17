@@ -8,8 +8,10 @@ type repo struct {
 }
 
 type Table struct {
-	Name    string
-	Columns []Column
+	FolderName string
+	Name       string
+	StructName string
+	Columns    []Column
 }
 
 type Column struct {

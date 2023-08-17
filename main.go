@@ -32,6 +32,6 @@ func main() {
 
 	// generate model
 	for _, v := range list {
-		tmp.GenerateDB(v, folderName)
+		tmp.GenerateModel(v, folderName)
 	}
 }

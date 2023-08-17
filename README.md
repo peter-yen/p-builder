@@ -23,5 +23,5 @@ folder: generate model folder path
 (default: ./model)
 (✅ If the folder does not exist, it will help you create a folder)
 ```
-p-builder -driver postgres -dir postgresql://peter:123456@localhost:5432/tmpl?sslmode=disable -folder /path/to/model
+p-builder -driver postgres -dir "postgresql://peter:123456@localhost:5432/tmpl?sslmode=disable" -folder /path/to/model
 ```

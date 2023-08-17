@@ -26,8 +26,10 @@ func (r *repo) mysqlDiver() (tables []Table) {
 		}
 		fmt.Println("Table name:", tableName)
 
+		name := bottomLineToUpper(tableName)
+
 		// 遍歷表格欄位
-		tables = append(tables, Table{Name: strings.Title(tableName), Columns: r.getMysqlColumns(tableName)})
+		tables = append(tables, Table{Name: strings.Title(tableName), StructName: strings.Title(name), Columns: r.getMysqlColumns(tableName)})
 	}
 
 	if err = rows.Err(); err != nil {
@@ -58,12 +60,7 @@ func (r *repo) getMysqlColumns(tableName string) (arr []Column) {
 		}
 
 		// 讓 _ 之後的字母大寫
-		names := strings.Split(columnName, "_")
-
-		var name string
-		for _, val := range names {
-			name += strings.Title(val)
-		}
+		name := bottomLineToUpper(columnName)
 
 		arr = append(arr, Column{
 			Name:     strings.Title(name),

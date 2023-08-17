@@ -26,8 +26,11 @@ func (r *repo) postgresDiver() (tables []Table) {
 		}
 		fmt.Println("Table name:", tableName)
 
+		// 將 _ 轉換為大寫
+		name := bottomLineToUpper(tableName)
+
 		// 遍歷表格欄位
-		tables = append(tables, Table{Name: strings.Title(tableName), Columns: r.getPostgresColumns(tableName)})
+		tables = append(tables, Table{Name: strings.Title(tableName), StructName: strings.Title(name), Columns: r.getPostgresColumns(tableName)})
 	}
 
 	if err = rows.Err(); err != nil {
@@ -70,12 +73,7 @@ func (r *repo) getPostgresColumns(table string) (arr []Column) {
 		}
 
 		// 讓 _ 之後的字母大寫
-		names := strings.Split(columnTypes[i].Name(), "_")
-
-		var name string
-		for _, val := range names {
-			name += strings.Title(val)
-		}
+		name := bottomLineToUpper(columnTypes[i].Name())
 
 		arr = append(arr, Column{
 			Name:     strings.Title(name),

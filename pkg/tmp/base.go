@@ -4,12 +4,15 @@ import (
 	"github.com/peter-yen/p-builder/pkg/db"
 	"github.com/peter-yen/p-builder/pkg/global"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
 
 // GenerateDB 產生 model
-func GenerateDB(field db.Table, folderName string) {
+func GenerateModel(field db.Table, folderName string) {
+
+	field.FolderName = filepath.Base(folderName)
 
 	tmpl, err := template.New(field.Name).Parse(str)
 	if err != nil {
@@ -51,12 +54,10 @@ func prefixToLower(str string) string {
 // range .Columns , end  可以使用 []struct 作為傳入參數
 
 const str = `
-package model
+package {{.FolderName}}
 
-type {{.Name}} struct {
-{{range .Columns}}
+type {{.StructName}} struct { {{range .Columns}}
 	// {{.Comment}}
-	{{.Name}} {{.GoType}} ` + "`json:\"{{.JsonName}}\"`" + `
-{{end}}
+	{{.Name}} {{.GoType}} ` + "`json:\"{{.JsonName}}\"`" + `  {{end}}
 }
 `
